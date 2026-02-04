@@ -1,0 +1,17 @@
+# Секрети (Ніколи не заливати!)
+.env
+
+# Папки редакторів (сміття)
+.idea/
+.vscode/
+*.swp
+
+# Python сміття
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Docker (якщо є локальні дані)
+postgres_data/

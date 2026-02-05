@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+:root {
+  --bg-color: #FDFBF7;       /* Молочний Крем */
+  --text-color: #4A3B32;     /* Еспресо */
+  --alive-color: #54A0FF;    /* Небесний Блакитний */
+  --dead-color: #E05666;     /* Малиновий Джем */
+  --card-bg: #FFFFFF;        /* Білий */
+  --border-color: #E5D9D0;   /* Латте */
+  
+  --font-main: 'Nunito', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font-family: var(--font-main);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}

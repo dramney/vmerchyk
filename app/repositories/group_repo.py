@@ -12,3 +12,13 @@ class GroupRepository(BaseRepository[Group]):
         statement = select(Group).where(Group.id == group_id).options(selectinload(Group.sites))
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()
+
+    async def get_multi_by_owner(self, user_id: int) -> list[Group]:
+        """Знайти всі групи юзера РАЗОМ із сайтами"""
+        statement = (
+            select(Group)
+            .where(Group.user_id == user_id)
+            .options(selectinload(Group.sites))
+        )
+        result = await self.session.execute(statement)
+        return result.scalars().all()

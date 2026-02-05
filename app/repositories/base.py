@@ -32,3 +32,6 @@ class BaseRepository(Generic[T]):
         """Видалити запис"""
         await self.session.delete(obj)
         await self.session.commit()
+
+    async def get(self, id: int) -> Optional[T]:
+        return await self.session.get(self.model, id)

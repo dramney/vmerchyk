@@ -67,3 +67,39 @@ class GroupService:
         await self.group_repo.session.refresh(group)
 
         return group
+
+    async def get_user_groups(self, user_id: int) -> list[Group]:
+        """Отримати список груп поточного користувача"""
+        return await self.group_repo.get_multi_by_owner(user_id)
+
+    async def delete_group(self, group_id: int, user_id: int):
+        """Видаляє групу, якщо вона належить юзеру"""
+        group = await self.group_repo.get(group_id)
+        if not group:
+            raise HTTPException(status_code=404, detail="Група не знайдена")
+        if group.user_id != user_id:
+            raise HTTPException(status_code=403, detail="Це не твоя група!")
+
+        await self.group_repo.session.delete(group)
+        await self.group_repo.session.commit()
+
+    async def remove_site_from_group(self, group_id: int, site_id: int, user_id: int):
+        """Прибирає сайт з групи (розриває зв'язок)"""
+        group = await self.group_repo.get_with_sites(group_id)
+
+        if not group:
+            raise HTTPException(status_code=404, detail="Група не знайдена")
+        if group.user_id != user_id:
+            raise HTTPException(status_code=403, detail="Це не твоя група!")
+
+        site_to_remove = next((s for s in group.sites if s.id == site_id), None)
+
+        if not site_to_remove:
+            raise HTTPException(status_code=404, detail="Цього сайту немає в цій групі")
+
+        group.sites.remove(site_to_remove)
+
+        self.group_repo.session.add(group)
+        await self.group_repo.session.commit()
+
+        return await self.group_repo.get_with_sites(group_id)

@@ -13,7 +13,7 @@ class CheckerService:
     def __init__(self, group_repo: GroupRepository):
         self.group_repo = group_repo
 
-    async def _check_single_url(self, client: httpx.AsyncClient, url: str) -> SiteStatus:
+    async def check_single_url(self, client: httpx.AsyncClient, url: str) -> SiteStatus:
         start_time = time.perf_counter()
         try:
             response = await client.get(url, timeout=10.0, follow_redirects=True)
@@ -30,12 +30,13 @@ class CheckerService:
                 label=label
             )
         except Exception as e:
+            label = random.choice(DEAD_LABELS)
             return SiteStatus(
                 url=url,
                 status_code=0,
                 is_alive=False,
                 response_time=0.0,
-                label="Клінічна смерть",
+                label=label,
                 error=str(e)
             )
 
@@ -45,7 +46,7 @@ class CheckerService:
             return []
 
         async with httpx.AsyncClient() as client:
-            tasks = [self._check_single_url(client, site.url) for site in group.sites]
+            tasks = [self.check_single_url(client, site.url) for site in group.sites]
 
             results = await asyncio.gather(*tasks)
             return results

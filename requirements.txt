@@ -10,3 +10,4 @@ python-multipart
 httpx
 email-validator
 alembic
+beautifulsoup4
